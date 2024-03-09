@@ -35,36 +35,36 @@ export default {
       task.id===id ? {...task,reminder:!task.reminder}:task)
 
     },
-    addTask(task){
-      this.task=[...this.task,task]
+    async addTask(task){
+      const res=await fetch("http://localhost:5000/task",{
+        method:'POST',
+        headers:{
+          'content-type':'application/json',
+         
+        },
+         body:JSON.stringify(task)
+      })
+      const data=await res.json()
+      this.task=[...this.task,data]
 
     },
     toggleAddTask(){
       this.showAddTask=!this.showAddTask;
+    },
+    async fetchTasks(){
+      const res=await fetch('http://localhost:5000/task')
+      const data=await res.json()
+      return data
+    },
+      async fetchTasks(id){
+      const res=await fetch(`http://localhost:5000/task/${id}`)
+      const data=await res.json()
+      return data
     }
   }
   ,
-  created() {
-    this.task = [
-      {
-        id: 1,
-        text: "Doctors Appointment",
-        day: "March 1st",
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: "Doctors Appointment",
-        day: "March 1st",
-        reminder: false,
-      },
-      {
-        id: 3,
-        text: "Doctors Appointment",
-        day: "March 1st",
-        reminder: true,
-      },
-    ];
+ async created() {
+    this.task =await this.fetchTasks()
   },
 };
 </script>
